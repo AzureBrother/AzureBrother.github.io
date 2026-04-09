@@ -26,8 +26,8 @@ Browse the latest guides and scripts to help secure and automate your tenant:
 ---
 <div align="center">
 
-*Created and maintained by Azure Brother. Connect, automate, and secure.* <br> 
+*Created and maintained by Azure Brother. Connect, automate, and secure.* <br><br>
 
-### ☁️ **And remember:** When it comes to Azure, you've always got your Brother in the Cloud. 😊
+<h3>☁️ <strong>And remember:</strong> When it comes to Azure, you've always got your Brother in the Cloud. 😊</h3>
 
 </div>
