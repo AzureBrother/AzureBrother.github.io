@@ -1,6 +1,6 @@
-# Welcome to Azure Brother ☁️
+# Welcome to the Azure Brother channel ☁️
 
-Welcome to **Azure Brother**, your go-to resource for IT administrators and cloud engineers. 
+Your friendly guides to Mastering Microsoft Entra ID & modern Azure identity.
 
 If you manage Microsoft 365 or Azure environments, you know that sometimes the default portals just don't give you the automation or reporting you need. That is exactly what this site is built to solve. 
 
