@@ -23,11 +23,6 @@ Browse the latest guides and scripts to help secure and automate your tenant:
 
 <br>
 
-
----
----
-<div align="center">
-
 ---
 <div align="center">
 
