@@ -28,3 +28,4 @@ Browse the latest guides and scripts to help secure and automate your tenant:
 
 ```text
 💡 And remember: When it comes to Azure, you've always got your Brother in the Cloud. 😊
+```
