@@ -6,7 +6,7 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-```mermaid
+<pre class="mermaid">
 graph TD
     classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff;
     classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff;
@@ -45,7 +45,12 @@ graph TD
     RB -->|4. Submits Email Payload via| Graph
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
-```
+</pre>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
 
 ---
 
