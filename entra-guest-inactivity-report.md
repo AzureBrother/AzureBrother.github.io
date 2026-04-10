@@ -4,17 +4,9 @@ This guide explains how to set up an Azure Automation Account to automatically i
 
 This solution operates entirely headlessly using a **System-Assigned Managed Identity** and the **Microsoft Graph API**.
 
-## Prerequisites
-* An active Azure Subscription.
-* Global Administrator or Privileged Role Administrator rights (to assign Graph API permissions).
-* A Shared Mailbox in Exchange Online.
-* The Object ID of an Entra ID Group (if you want to filter out specific guests).
-
----
-
 ## Architecture diagram
 
-```mermaid
+<div class="mermaid">
 graph TD
     %% Define Styling
     classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff;
@@ -55,7 +47,20 @@ graph TD
     RB -->|4. Submits Email Payload via| Graph
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
-```
+</div>
+
+<script type="module">
+  import mermaid from '[https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs](https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs)';
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+---
+
+## Prerequisites
+* An active Azure Subscription.
+* Global Administrator or Privileged Role Administrator rights (to assign Graph API permissions).
+* A Shared Mailbox in Exchange Online.
+* The Object ID of an Entra ID Group (if you want to filter out specific guests).
 
 ---
 
