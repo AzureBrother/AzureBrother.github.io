@@ -6,9 +6,8 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-```mermaid
+<div class="mermaid">
 graph TD
-    %% Custom Styles
     classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
     classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
     classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
@@ -32,7 +31,6 @@ graph TD
         Recipient[IT Admin Inbox]:::exchange
     end
 
-    %% Relationships and Data Flow
     AA -->|Hosts| RB
     AA -->|Enables| MI
     MI -.->|Granted| Perms
@@ -49,9 +47,8 @@ graph TD
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
 
-    %% Apply grey background styling to the containers
     class Azure,Entra,Exchange subGraphStyle;
-```
+</div>
 
 ## Prerequisites
 * An active Azure Subscription.
