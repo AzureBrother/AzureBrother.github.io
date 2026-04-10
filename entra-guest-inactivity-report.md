@@ -4,6 +4,14 @@ This guide explains how to set up an Azure Automation Account to automatically i
 
 This solution operates entirely headlessly using a **System-Assigned Managed Identity** and the **Microsoft Graph API**.
 
+## Prerequisites
+* An active Azure Subscription.
+* Global Administrator or Privileged Role Administrator rights (to assign Graph API permissions).
+* A Shared Mailbox in Exchange Online.
+* The Object ID of an Entra ID Group (if you want to filter out specific guests).
+
+---
+
 ## Architecture diagram
 
 <pre class="mermaid">
@@ -52,15 +60,6 @@ graph TD
   mermaid.initialize({ startOnLoad: true });
 </script>
 
----
-
-## Prerequisites
-* An active Azure Subscription.
-* Global Administrator or Privileged Role Administrator rights (to assign Graph API permissions).
-* A Shared Mailbox in Exchange Online.
-* The Object ID of an Entra ID Group (if you want to filter out specific guests).
-
----
 
 ## Step 1: Create the Azure Automation Account
 1. Log into the [Azure Portal](https://portal.azure.com) and search for **Automation Accounts**.
