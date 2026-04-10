@@ -6,12 +6,12 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-<div class="mermaid">
+```mermaid
 graph TD
-    classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
-    classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
-    classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
-    classDef subGraphStyle fill:#f2f4f5,stroke:#d1d6d8,stroke-width:2px,color:#333;
+    %% Custom Styles
+    classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff;
 
     subgraph Azure ["☁️ Azure Subscription"]
         AA[Azure Automation Account]:::azure
@@ -20,7 +20,7 @@ graph TD
     end
 
     subgraph Entra ["🛡️ Microsoft Entra ID"]
-        Perms[[Application Permissions]]:::entra
+        Perms[Application Permissions]:::entra
         Graph[Microsoft Graph API]:::entra
         Guests[Guest User Profiles & Sign-in Logs]:::entra
         Group[Entra ID Group: Guest_Accounts]:::entra
@@ -31,24 +31,28 @@ graph TD
         Recipient[IT Admin Inbox]:::exchange
     end
 
+    %% Relationships and Data Flow
     AA -->|Hosts| RB
     AA -->|Enables| MI
     MI -.->|Granted| Perms
     Perms -.->|Authorizes| Graph
-    
+
     RB -->|1. Requests Access Token via| MI
     RB -->|2. Queries Data via| Graph
     Graph -->|Reads| Guests
     Graph -->|Reads| Group
-    
+
     RB -->|3. Processes Data & Encodes CSV| RB
-    
+
     RB -->|4. Submits Email Payload via| Graph
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
 
-    class Azure,Entra,Exchange subGraphStyle;
-</div>
+    %% Subgraph background styling
+    style Azure fill:#f2f4f5,stroke:#d1d6d8,stroke-width:2px,color:#333
+    style Entra fill:#f2f4f5,stroke:#d1d6d8,stroke-width:2px,color:#333
+    style Exchange fill:#f2f4f5,stroke:#d1d6d8,stroke-width:2px,color:#333
+```
 
 ## Prerequisites
 * An active Azure Subscription.
