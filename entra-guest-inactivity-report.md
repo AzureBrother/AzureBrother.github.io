@@ -6,9 +6,8 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-<div class="mermaid">
+```mermaid
 graph TD
-    %% Define Styling
     classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff;
     classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff;
     classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff;
@@ -31,7 +30,6 @@ graph TD
         Recipient[IT Admin Inbox]:::exchange
     end
 
-    %% Relationships and Data Flow
     AA -->|Hosts| RB
     AA -->|Enables| MI
     MI -.->|Granted| Perms
@@ -47,12 +45,7 @@ graph TD
     RB -->|4. Submits Email Payload via| Graph
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
-</div>
-
-<script type="module">
-  import mermaid from '[https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs](https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs)';
-  mermaid.initialize({ startOnLoad: true });
-</script>
+```
 
 ---
 
