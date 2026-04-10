@@ -6,30 +6,33 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-<pre class="mermaid">
+```mermaid
 graph TD
-    classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff;
+    %% Custom Styles
+    classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
+    classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
+    classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff,rx:5px,ry:5px;
+    classDef subGraphStyle fill:#f2f4f5,stroke:#d1d6d8,stroke-width:2px,color:#333;
 
-    subgraph Azure Subscription
+    subgraph Azure ["☁️ Azure Subscription"]
         AA[Azure Automation Account]:::azure
         MI[System-Assigned Managed Identity]:::azure
         RB[PowerShell Runbook & Schedule]:::azure
     end
 
-    subgraph Microsoft Entra ID
+    subgraph Entra ["🛡️ Microsoft Entra ID"]
+        Perms[[Application Permissions]]:::entra
         Graph[Microsoft Graph API]:::entra
         Guests[Guest User Profiles & Sign-in Logs]:::entra
         Group[Entra ID Group: Guest_Accounts]:::entra
-        Perms[[Application Permissions]]:::entra
     end
 
-    subgraph Exchange Online
+    subgraph Exchange ["✉️ Exchange Online"]
         Mailbox[Disabled Shared Mailbox]:::exchange
         Recipient[IT Admin Inbox]:::exchange
     end
 
+    %% Relationships and Data Flow
     AA -->|Hosts| RB
     AA -->|Enables| MI
     MI -.->|Granted| Perms
@@ -45,14 +48,10 @@ graph TD
     RB -->|4. Submits Email Payload via| Graph
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
-</pre>
 
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
-
----
+    %% Apply grey background styling to the containers
+    class Azure,Entra,Exchange subGraphStyle;
+```
 
 ## Prerequisites
 * An active Azure Subscription.
