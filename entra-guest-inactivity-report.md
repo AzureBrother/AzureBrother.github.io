@@ -1,3 +1,8 @@
+---
+layout: default
+title: "Azure Automation: 180-Day Guest Inactivity Report"
+---
+
 # Azure Automation: 180-Day Guest Inactivity Report
 
 This guide explains how to set up an Azure Automation Account to automatically identify Guest users who have not logged in for over 180 days, and send a summary report via a Shared Mailbox.
@@ -54,11 +59,6 @@ graph TD
     Graph -->|Routes message through| Mailbox
     Mailbox -->|Delivers HTML + CSV| Recipient
 </pre>
-
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
 
 
 ## Step 1: Create the Azure Automation Account
