@@ -38,7 +38,7 @@ Open an administrative PowerShell console, ensure the `Microsoft.Graph` module i
   </button>
 
   <pre style="max-height: 400px; overflow-y: auto; background-color: #1e1e1e; color: #d4d4d4; padding: 40px 15px 15px 15px; border-radius: 6px; border: 1px solid #333;">
-<code id="psScript"># Paste your PowerShell script here
+<code id="psScript">#
 Connect-MgGraph -Scopes "AppRoleAssignment.ReadWrite.All", "Application.Read.All"
 
 $AppName = "Your-Automation-Account-Name"
