@@ -44,7 +44,7 @@ Because you cannot assign Microsoft Graph *Application* permissions to a Managed
 Open an administrative PowerShell console, ensure the `Microsoft.Graph` module is installed, download and run the script from this repository: 
    👉 <a href="https://github.com/AzureBrother/AzureBrother.github.io/blob/main/scripts/Grant-GraphAPIPermissions.ps1" target="_blank" rel="noopener noreferrer">Grant-GraphAPIPermissions.ps1</a>
 
-**Be sure to replace `$AppName` with the exact name of your Automation Account.**
+> Be sure to replace `$AppName` with the exact name of your Automation Account.
 
 ## Step 4: Create the Runbook
 1. In your Automation Account, go to **Process Automation > Runbooks**.
