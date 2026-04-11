@@ -55,7 +55,7 @@ Open an administrative PowerShell console, ensure the `Microsoft.Graph` module i
 5. Paste the code into the Azure Automation editor. 
 6. Click **Save**, test it using the **Test pane**, and then click **Publish**.
 
-> Remember to update the configuration variables at the top of the script with your specific Group ID and email addresses).
+> Remember to update the configuration variables at the top of the script with your specific Group ID and email addresses.
 
 ## Step 5: Schedule the Automation
 Navigate to **Shared Resources > Schedules** and click **Add a schedule** (e.g., "Weekly on Mondays").
