@@ -14,7 +14,19 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-![Architecture Diagram](images/architecture_diagram.png)
+
+<div style="padding: 20px; background: #fdfdfd; border-radius: 12px; border: 1px solid #eee; transition: transform 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.05);" 
+     onmouseover="this.style.transform='scale(1.02)'" 
+     onmouseout="this.style.transform='scale(1)'">
+  
+  <a href="architecture_diagram.png" target="_blank">
+    <img src="https://github.com/AzureBrother/AzureBrother.github.io/blob/main/images/architecture_diagram.png" alt="Architecture Diagram" style="width: 100%; border-radius: 8px;">
+  </a>
+  
+  <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 15px;">
+    🔍 <i>Click image to open full-resolution version in a new tab</i>
+  </p>
+</div>
 
 ## Step 1: Create the Azure Automation Account
 1. Log into the <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer">Azure Portal</a> and search for **Automation Accounts**.
