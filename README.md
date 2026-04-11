@@ -11,14 +11,15 @@ Here, you will find step-by-step, actionable **How-To Guides** focusing heavily 
 ## 📺 The YouTube Channel
 If you prefer video tutorials and visual walkthroughs, check out the companion YouTube channel! 
 
-👉 <a href="https://www.youtube.com/@AzureBrothers" target="_blank" rel="noopener noreferrer">Subscribe to Azure Brothers on YouTube</a>
+👉 <a href="https://www.youtube.com/@AzureBrothers" target="_blank" rel="noopener noreferrer">Subscribe to Azure Brothers on YouTube</a> <br> <br>
 ---
 
 ## 📚 How-To Articles
 
 Browse the latest guides and scripts to help secure and automate your tenant:
 
-* **[Azure Automation: 180-Day Guest Inactivity Report](articles/entra-guest-inactivity-report.md)** *Learn how to build a headless Managed Identity solution that emails you a weekly CSV report of stale guest accounts using the Microsoft Graph API.*
+* <strong><a href="/articles/entra-guest-inactivity-report.html" target="_blank" rel="noopener noreferrer">Azure Automation: 180-Day Guest Inactivity Report</a></strong> <br>
+<em>Learn how to build a headless Managed Identity solution that emails you a weekly CSV report of stale guest accounts using the Microsoft Graph API.</em>
 
 <br>
 
