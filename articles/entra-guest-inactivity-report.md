@@ -19,7 +19,7 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
      onmouseover="this.style.transform='scale(1.02)'" 
      onmouseout="this.style.transform='scale(1)'">
   
-  <a href="architecture_diagram.png" target="_blank">
+  <a href="https://github.com/AzureBrother/AzureBrother.github.io/blob/main/images/architecture_diagram.png" target="_blank">
     <img src="https://github.com/AzureBrother/AzureBrother.github.io/blob/main/images/architecture_diagram.png" alt="Architecture Diagram" style="width: 100%; border-radius: 8px;">
   </a>
   
