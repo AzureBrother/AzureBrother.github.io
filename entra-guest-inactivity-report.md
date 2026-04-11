@@ -31,7 +31,14 @@ Because you cannot assign Microsoft Graph *Application* permissions to a Managed
 
 Open an administrative PowerShell console, ensure the `Microsoft.Graph` module is installed, and run the following script. **Be sure to replace `$AppName` with the exact name of your Automation Account.**
 
-```powershell
+<div style="position: relative; margin-bottom: 20px;">
+  
+  <button onclick="copyMyCode()" style="position: absolute; top: 10px; right: 10px; padding: 6px 12px; background-color: #0078D4; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+    Copy Code
+  </button>
+
+  <pre style="max-height: 400px; overflow-y: auto; background-color: #1e1e1e; color: #d4d4d4; padding: 40px 15px 15px 15px; border-radius: 6px; border: 1px solid #333;">
+<code id="psScript"># Paste your PowerShell script here
 Connect-MgGraph -Scopes "AppRoleAssignment.ReadWrite.All", "Application.Read.All"
 
 $AppName = "Your-Automation-Account-Name"
@@ -52,6 +59,20 @@ foreach ($Role in $Roles) {
     New-MgServicePrincipalAppRoleAssignment -PrincipalId $ManagedIdentity.Id -ServicePrincipalId $ManagedIdentity.Id -ResourceId $GraphApp.Id -AppRoleId $AppRole.Id
     Write-Host "Assigned $Role to $AppName"
 }
+</code>
+  </pre>
+</div>
+
+<script>
+  function copyMyCode() {
+    var codeText = document.getElementById("psScript").innerText;
+    navigator.clipboard.writeText(codeText).then(function() {
+      alert("Script copied to clipboard!");
+    });
+  }
+</script>
+
+
 ```
 
 ## Step 4: Create the Runbook
@@ -59,9 +80,9 @@ foreach ($Role in $Roles) {
 2. Click **Create a runbook**. 
 3. Name it (e.g., `Get-StaleGuestAccounts`), set the Runbook type to **PowerShell**, and set the Runtime version to **5.1** (or 7.2).
 4. Download the script from this repository: 
-   👉 **[Get-StaleGuestAccounts.ps1](Get-StaleGuestAccounts.ps1)**
-5. Paste the code into the Azure Automation editor. *(Remember to update the configuration variables at the top of the script with your specific Group ID and email addresses).*
-6. Click **Save**, test it using the **Test pane**, and then click **Publish**.
+   👉 <a href="https://github.com/AzureBrother/AzureBrother.github.io/blob/main/Get-StaleGuestAccounts.ps1" target="_blank" rel="noopener noreferrer">Get-StaleGuestAccounts.ps1</a>
+6. Paste the code into the Azure Automation editor. *(Remember to update the configuration variables at the top of the script with your specific Group ID and email addresses).*
+7. Click **Save**, test it using the **Test pane**, and then click **Publish**.
 
 ## Step 5: Schedule the Automation
 Navigate to **Shared Resources > Schedules** and click **Add a schedule** (e.g., "Weekly on Mondays").
