@@ -14,7 +14,7 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-![Architecture Diagram](architecture.png)
+![Architecture Diagram](images/architecture_diagram.png)
 
 ## Step 1: Create the Azure Automation Account
 1. Log into the [Azure Portal](https://portal.azure.com) and search for **Automation Accounts**.
