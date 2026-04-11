@@ -19,7 +19,7 @@ If you prefer video tutorials and visual walkthroughs, check out the companion Y
 
 Browse the latest guides and scripts to help secure and automate your tenant:
 
-* **[Azure Automation: 180-Day Guest Inactivity Report](entra-guest-inactivity-report.md)** *Learn how to build a headless Managed Identity solution that emails you a weekly CSV report of stale guest accounts using the Microsoft Graph API.*
+* **[Azure Automation: 180-Day Guest Inactivity Report](articles/entra-guest-inactivity-report.md)** *Learn how to build a headless Managed Identity solution that emails you a weekly CSV report of stale guest accounts using the Microsoft Graph API.*
 
 <br>
 
