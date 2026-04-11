@@ -14,51 +14,7 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 
 ## Architecture diagram
 
-<pre class="mermaid">
-graph TD
-    classDef azure fill:#0072C6,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef entra fill:#0078D4,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef exchange fill:#00A4EF,stroke:#fff,stroke-width:2px,color:#fff;
-
-    subgraph Azure Subscription
-        AA[Azure Automation Account]:::azure
-        MI[System-Assigned Managed Identity]:::azure
-        RB[PowerShell Runbook & Schedule]:::azure
-    end
-
-    subgraph Microsoft Entra ID
-        Graph[Microsoft Graph API]:::entra
-        Guests[Guest User Profiles & Sign-in Logs]:::entra
-        Group[Entra ID Group: Guest_Accounts]:::entra
-        Perms[[Application Permissions]]:::entra
-    end
-
-    subgraph Exchange Online
-        Mailbox[Disabled Shared Mailbox]:::exchange
-        Recipient[IT Admin Inbox]:::exchange
-    end
-
-    AA -->|Hosts| RB
-    AA -->|Enables| MI
-    MI -.->|Granted| Perms
-    Perms -.->|Authorizes| Graph
-    
-    RB -->|1. Requests Access Token via| MI
-    RB -->|2. Queries Data via| Graph
-    Graph -->|Reads| Guests
-    Graph -->|Reads| Group
-    
-    RB -->|3. Processes Data & Encodes CSV| RB
-    
-    RB -->|4. Submits Email Payload via| Graph
-    Graph -->|Routes message through| Mailbox
-    Mailbox -->|Delivers HTML + CSV| Recipient
-</pre>
-
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
+![Architecture Diagram](architecture.png)
 
 ## Step 1: Create the Azure Automation Account
 1. Log into the [Azure Portal](https://portal.azure.com) and search for **Automation Accounts**.
