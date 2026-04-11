@@ -17,7 +17,7 @@ This solution operates entirely headlessly using a **System-Assigned Managed Ide
 ![Architecture Diagram](images/architecture_diagram.png)
 
 ## Step 1: Create the Azure Automation Account
-1. Log into the [Azure Portal](https://portal.azure.com) and search for **Automation Accounts**.
+1. Log into the <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer">Azure Portal</a> and search for **Automation Accounts**.
 2. Click **Create**, fill in your resource group and naming details, and deploy the resource.
 
 ## Step 2: Enable the Managed Identity
