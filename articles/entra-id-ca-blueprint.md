@@ -1,4 +1,4 @@
-# 🛡️ Your Conditional Access is Outdated. Here’s the 2026 Zero Trust Blueprint.
+## 🛡️ Your Conditional Access is Outdated. Here’s the 2026 Zero Trust Blueprint.
 
 If you open your Microsoft Entra ID portal and see a graveyard of "temporary" Conditional Access (CA) policies, overlapping rules, and legacy configurations, you aren't alone. Most IT teams built their CA policies years ago and just kept adding to the pile. 
 
@@ -56,7 +56,8 @@ Legacy protocols (like POP3/IMAP4) do not support MFA. They must be shut down.
 If a user logs into a home PC and forgets to log out, the next person using that PC shouldn't have access to your corporate data.
 * **Target Users:** All Users (Exclude: Break Glass Account)
 * **Target Apps:** All Resources
-* **Conditions:** * Client Apps: Browser
+* **Conditions:**
+  * Client Apps: Browser
   * Filter for Devices: Include `device.isCompliant -ne True` (Excludes Hybrid/Entra-joined compliant devices).
 * **Session Control:** Sign-in frequency (12 hours) AND **Never persistent**.
 
@@ -94,4 +95,4 @@ Don't let external collaborators be your weak link.
 
 Every environment is unique, so use this blueprint as your foundation and adapt it to your specific compliance needs. Always check the **Coverage Blade** in Entra ID to ensure no users are falling through the cracks!
 
-If you found this guide helpful, make sure to [Subscribe to Azure Brother on YouTube](https://www.youtube.com/@AzureBrothers) for more cloud architecture deep dives. Remember, when it comes to Azure, you always got your brother in the cloud! ☁️👨‍💻
+If you found this guide helpful, make sure to [Subscribe to Azure Brother on YouTube](https://www.youtube.com/@AzureBrothers) for more cloud architecture deep dives. Remember, when it comes to Azure, you always got your brother in the cloud! ☁️
