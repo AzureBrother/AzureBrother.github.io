@@ -95,4 +95,4 @@ Don't let external collaborators be your weak link.
 
 Every environment is unique, so use this blueprint as your foundation and adapt it to your specific compliance needs. Always check the **Coverage Blade** in Entra ID to ensure no users are falling through the cracks!
 
-If you found this guide helpful, make sure to [Subscribe to Azure Brother on YouTube](https://www.youtube.com/@AzureBrothers) for more cloud architecture deep dives. Remember, when it comes to Azure, you always got your brother in the cloud! ☁️
+If you found this guide helpful, make sure to 👉 <a href="https://www.youtube.com/@AzureBrothers" target="_blank" rel="noopener noreferrer">Subscribe to Azure Brother on YouTube</a> for more cloud architecture deep dives. Remember, when it comes to Azure, you always got your brother in the cloud! ☁️
