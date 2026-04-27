@@ -1,4 +1,4 @@
-## 🛡️ Your Conditional Access is Outdated. Here’s the 2026 Zero Trust Blueprint.
+# 🛡️ Your Conditional Access is Outdated. Here’s the 2026 Zero Trust Blueprint.
 
 If you open your Microsoft Entra ID portal and see a graveyard of "temporary" Conditional Access (CA) policies, overlapping rules, and legacy configurations, you aren't alone. Most IT teams built their CA policies years ago and just kept adding to the pile. 
 
