@@ -18,7 +18,7 @@ If you prefer video tutorials and visual walkthroughs, check out the companion Y
 
 Browse the latest guides and scripts to help secure and automate your tenant:
 
-* <strong><a href="/articles/entra-id-ca-p1-blueprint.html" target="_blank" rel="noopener noreferrer">The 2026 Entra ID Conditional Access Blueprint (P1)</a></strong> <br>
+* <strong><a href="/articles/entra-id-ca-blueprint.html" target="_blank" rel="noopener noreferrer">The 2026 Entra ID Conditional Access Blueprint (P1)</a></strong> <br>
 <em>Is your Conditional Access stuck in the past? In this guide, I break down how to wipe out legacy CA sprawl and build a clean, 7-policy Zero Trust architecture using only Entra ID P1 features. Learn how to tame BYOD, block legacy auth, and properly secure your admins.</em>
 
 <br>
