@@ -11,7 +11,7 @@ Here, you will find step-by-step, actionable **How-To Guides** focusing heavily 
 ## 📺 The YouTube Channel
 If you prefer video tutorials and visual walkthroughs, check out the companion YouTube channel! 
 
-👉 <a href="https://www.youtube.com/@AzureBrother" target="_blank" rel="noopener noreferrer">Subscribe to Azure Brother on YouTube</a> 
+👉 <a href="https://www.youtube.com/@AzureBrothers" target="_blank" rel="noopener noreferrer">Subscribe to Azure Brother on YouTube</a> 
 <br>
 
 ## 📚 How-To Articles
