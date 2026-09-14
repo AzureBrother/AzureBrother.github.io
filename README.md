@@ -26,11 +26,16 @@ Your friendly guides to Mastering Microsoft Entra ID & modern Azure identity.
   <br>
   <p>Browse the latest guides and scripts to help secure and automate your tenant:</p>
   
-  * [**Passwordless from Day One | Windows Autopilot + TAP + WHfB + Passkeys**](/articles/passwordless-day-one)
-    <br> *Learn how to onboard new employees with a 100% passwordless experience from day one using Temporary Access Pass, Windows Autopilot, and device/app-bound Passkeys.*
-  <br>
-  * [**Nobody Registers Passkeys... Until You Do This | Entra ID Registration Campaigns**](/articles/entra-registration-campaigns)
-    <br> *Learn how to stop waiting for users to adopt passwordless authentication by configuring Microsoft Entra ID Registration Campaigns to gently (or forcibly) nudge them toward Passkeys.*
+  <ul style="line-height: 1.6;">
+    <li style="margin-bottom: 12px;">
+      <a href="/articles/passwordless-day-one" style="font-weight: bold; font-size: 1.1em; color: #0ea5e9; text-decoration: none;">Passwordless from Day One | Windows Autopilot + TAP + WHfB + Passkeys</a><br>
+      <i style="color: #64748b;">Learn how to onboard new employees with a 100% passwordless experience from day one using Temporary Access Pass, Windows Autopilot, and device/app-bound Passkeys.</i>
+    </li>
+    <li style="margin-bottom: 12px;">
+      <a href="/articles/entra-registration-campaigns" style="font-weight: bold; font-size: 1.1em; color: #0ea5e9; text-decoration: none;">Nobody Registers Passkeys... Until You Do This | Entra ID Registration Campaigns</a><br>
+      <i style="color: #64748b;">Learn how to stop waiting for users to adopt passwordless authentication by configuring Microsoft Entra ID Registration Campaigns to gently (or forcibly) nudge them toward Passkeys.</i>
+    </li>
+  </ul>
 
 </details>
 
@@ -44,6 +49,8 @@ Your friendly guides to Mastering Microsoft Entra ID & modern Azure identity.
   <br>
   <p>If you prefer video tutorials and visual walkthroughs, check out the companion YouTube channel!</p>
   
-  👉 [**Subscribe to Azure Brother on YouTube**](https://youtube.com/@azure.brother)
+  <p style="margin-top: 10px;">
+    👉 <a href="https://youtube.com/@azure.brother" style="font-weight: bold; color: #0ea5e9; text-decoration: none;">Subscribe to Azure Brother on YouTube</a>
+  </p>
 
 </details>
