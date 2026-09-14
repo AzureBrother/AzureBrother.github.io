@@ -64,4 +64,4 @@ Following the release of this video, several viewers and community members raise
 
 ***
 
-*If this technical deep dive was useful for you, let me know in the comments on YouTube. And remember, when it comes to Azure, you always got your brother in the cloud.*
+*If this technical deep dive was useful for you, let me know in the comments on YouTube. And remember, when it comes to Azure, you always got your brother in the cloud! ☁️*
