@@ -14,6 +14,12 @@ If you prefer video tutorials and visual walkthroughs, check out the companion Y
 👉 <a href="https://www.youtube.com/@Azure.Brother" target="_blank" rel="noopener noreferrer">Subscribe to Azure Brother on YouTube</a> 
 <br>
 
+## Interactive Passkey Decision Flow
+
+Use the tool below to determine the correct Entra ID passkey path for your environment:
+
+<iframe src="/tools/passkey-flow.html" width="100%" height="600px" style="border:none; border-radius:12px;" loading="lazy"></iframe>
+
 ## 🛠️ How-To Articles
 
 Browse the latest guides and scripts to help secure and automate your tenant:
