@@ -142,7 +142,7 @@
             synced_check: {
                 question: "Does your organization allow 'Synced Passkeys'?",
                 depth: 4,
-                infoHtml: `<strong>Device-Bound</strong> passkeys (like MS Authenticator) never leave the physical device. <strong>Synced Passkeys</strong> backup to the cloud (e.g., Google Password Manager, iCloud). Many high-security environments block synced passkeys via Entra Attestation policies. <br><a href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys#device-bound-and-synced-passkeys" target="_blank" class="text-azureBlue hover:text-azureAccent underline mt-2 inline-block text-sm">Learn about Device-bound vs Synced Passkeys</a>`,
+                infoHtml: `<strong>Device-Bound</strong> passkeys (like MS Authenticator) never leave the physical device. <strong>Synced Passkeys</strong> backup to the cloud (e.g., Google Password Manager, iCloud). Many high-security environments block synced passkeys via Entra Attestation policies. <br><a href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2#types-of-passkeys" target="_blank" class="text-azureBlue hover:text-azureAccent underline mt-2 inline-block text-sm">Learn about Device-bound vs Synced Passkeys</a>`,
                 options: [
                     { text: "Yes, synced passkeys are allowed", next: "synced_passkey_result" },
                     { text: "No, synced passkeys are prohibited", next: "no_option" }
