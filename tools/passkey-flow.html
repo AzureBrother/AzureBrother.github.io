@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entra ID Passkey Decision Flow | Azure Brother</title>
-    <meta name="description" content="Interactive decision tree to help you choose the correct Microsoft Entra ID passkey option based on OS, hardware, and policy constraints. By Azure Brother.">
+    <title>Entra ID Passkey Decision Flow</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -24,33 +23,22 @@
     </script>
     <style>
         body {
-            background-color: #0b1120;
+            background-color: transparent;
             color: #f8fafc;
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
         }
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center p-4">
 
-    <!-- Branding Header -->
-    <header class="text-center mb-8 fade-in">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-2">
-            Azure<span class="text-azureBlue">Brother</span>
-        </h1>
-        <p class="text-azureAccent uppercase tracking-widest text-sm font-semibold">
-            Cloud. Identity. Security.
-        </p>
-    </header>
-
-    <!-- App Container -->
-    <main class="w-full max-w-2xl bg-azurePanel rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col fade-in">
+    <!-- App Container (Header removed for seamless iframe embed) -->
+    <main class="w-full max-w-2xl bg-azurePanel rounded-2xl border border-slate-700 overflow-hidden flex flex-col fade-in shadow-none mt-2">
         <!-- Progress Bar -->
         <div class="w-full bg-slate-800 h-2">
             <div id="progress-bar" class="bg-azureBlue h-2 transition-all duration-300" style="width: 25%"></div>
@@ -102,7 +90,7 @@
                 type: "result",
                 status: "success",
                 title: "✅ Save Passkey to Windows Device (FIDO2)",
-                details: "For BYOD or consultants, Entra ID allows saving a FIDO2 passkey directly to <a href="https://learn.microsoft.com/en-us/windows/security/identity-protection/passkeys/?tabs=intune" target="_blank" rel="noopener noreferrer" class="text-azureBlue hover:underline">Windows Hello (WHfB)</a>. This registers a device-bound passkey isolated to that specific local device without requiring full MDM enrollment."
+                details: "For BYOD or consultants, Entra ID allows saving a FIDO2 passkey directly to Windows Hello. This registers a device-bound passkey isolated to that specific local device without requiring full MDM enrollment."
             },
             macos_path: {
                 type: "result",
