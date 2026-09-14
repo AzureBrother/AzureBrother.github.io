@@ -102,13 +102,13 @@
                 type: "result",
                 status: "success",
                 title: "✅ Save Passkey to Windows Device (FIDO2)",
-                details: "For BYOD or consultants, Entra ID allows saving a FIDO2 passkey directly to Windows Hello. This registers a device-bound passkey isolated to that specific local device without requiring full MDM enrollment."
+                details: "For BYOD or consultants, Entra ID allows saving a FIDO2 passkey directly to <a href="https://learn.microsoft.com/en-us/windows/security/identity-protection/passkeys/?tabs=intune" target="_blank" rel="noopener noreferrer" class="text-azureBlue hover:underline">Windows Hello (WHfB)</a>. This registers a device-bound passkey isolated to that specific local device without requiring full MDM enrollment."
             },
             macos_path: {
                 type: "result",
                 status: "success",
                 title: "✅ Use Platform SSO for macOS",
-                details: "On macOS 13 or later, Platform SSO (with Secure Enclave) enables hardware-bound passkeys native to Apple devices, providing a seamless, phishing-resistant Entra ID sign-in experience."
+                details: `On macOS 13 or later, <a href="https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-platform-sso-macos?tabs=secure-enclave" target="_blank" rel="noopener noreferrer" class="text-azureBlue hover:underline">Platform SSO (with Secure Enclave)</a> enables hardware-bound passkeys native to Apple devices, providing a seamless, phishing-resistant Entra ID sign-in experience.`
             },
             auth_path: {
                 question: "Do you have a physical FIDO2 security key (e.g., YubiKey)?",
