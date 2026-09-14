@@ -174,12 +174,10 @@
             const node = flow[nodeKey];
             container.innerHTML = '';
             
-            // Calculate and update progress bar
             const currentDepth = node.depth || (historyStack.length + 1);
             const percentage = Math.min((currentDepth / maxDepth) * 100, 100);
             progressBar.style.width = `${percentage}%`;
 
-            // Update Back button visibility
             if (historyStack.length > 0) {
                 btnBack.classList.remove('hidden');
             } else {
@@ -257,7 +255,6 @@
             renderNode('start');
         }
 
-        // Initialize the first view
         renderNode('start');
     </script>
 </body>
