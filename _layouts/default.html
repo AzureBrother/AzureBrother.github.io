@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | Azure Brother</title>
+    
+    <!-- Tailwind CSS + Typography Plugin for Markdown formatting -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        azureDark: '#0b1120',
+                        azureBlue: '#0ea5e9',
+                        azureHover: '#0284c7',
+                        azureAccent: '#38bdf8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    </style>
+</head>
+<body class="bg-azureDark text-slate-300 min-h-screen flex flex-col">
+
+    <!-- Global Header -->
+    <header class="border-b border-slate-800 bg-azureDark/90 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-extrabold text-white tracking-tight hover:opacity-80 transition-opacity">
+                Azure<span class="text-azureBlue">Brother</span>
+            </a>
+            <div class="flex gap-4 items-center">
+                <a href="/#articles" class="hover:text-white transition-colors text-sm font-medium">Articles</a>
+                <a href="/#tools" class="hover:text-white transition-colors text-sm font-medium">Tools</a>
+                <a href="/#scripts" class="hover:text-white transition-colors text-sm font-medium">Scripts</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Markdown Content Container -->
+    <main class="max-w-4xl mx-auto px-4 py-16 flex-grow w-full">
+        <!-- The 'prose' classes automatically style standard markdown elements -->
+        <article class="prose prose-invert prose-lg max-w-none prose-a:text-azureBlue hover:prose-a:text-azureAccent prose-headings:text-white prose-code:text-azureAccent prose-pre:bg-slate-800 prose-pre:border prose-pre:border-slate-700">
+            <!-- GitHub Pages injects your Markdown content here -->
+            {{ content }}
+        </article>
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900/50 py-10 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-slate-500 text-sm">
+                &copy; 2026 Azure Brother. All rights reserved.
+            </div>
+            <div class="flex gap-6 items-center">
+                <a href="https://ko-fi.com/azurebrother" target="_blank" class="text-sm text-slate-400 hover:text-[#FF5E5B] transition-colors font-medium">
+                    ☕ Support the Lab environment
+                </a>
+                <a href="https://github.com/AzureBrother" target="_blank" class="text-sm text-slate-400 hover:text-white transition-colors">
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
