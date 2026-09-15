@@ -248,6 +248,12 @@
 <div class="pcb-bg" aria-hidden="true"></div>
 
 <div class="wrap">
+  <header>
+    <div class="brand"><span class="brand-dot"></span>Azure Brother</div>
+    <h1>Which passkey should you use?</h1>
+    <p class="tagline"><span>Cloud.</span> <span>Identity.</span> <span>Security.</span></p>
+    <p class="subhead">Answer a few questions about the user's hardware to land on the right device-bound passkey option — with links to the official Microsoft docs for each one. Synced passkeys are disabled at the tenant level, so this flow only covers device-bound paths.</p>
+  </header>
 
   <div class="progress-row">
     <span class="progress-label" id="progressLabel">Question 1</span>
@@ -264,6 +270,7 @@
   </section>
 
   <footer>
+    <div class="foot-brand">AZURE BROTHER — azurebrother.com</div>
     <div>Built for Entra ID admins. Requirements and version numbers shift often — always confirm against the linked Microsoft Learn pages before enforcing a policy.</div>
   </footer>
 </div>
@@ -294,7 +301,7 @@
       help:"This determines which built-in, device-bound option is available.",
       options:[
         { label:'Windows', sub:'Windows Hello for Business or local save', next:'q_windows_managed' },
-        { label:'macOS', sub:'Platform SSO / Platform Credential', next:'o_macos' },
+        { label:'macOS', sub:'Platform SSO or key-based fallback', next:'q_macos_managed' },
         { label:'Android or iOS', sub:'Passkey in Microsoft Authenticator', next:'q_mobile_version' },
         { label:'Linux', sub:'No built-in platform credential', next:'o_linux' }
       ]
@@ -309,6 +316,18 @@
       options:[
         { label:'Yes, joined and managed', sub:'Eligible for Windows Hello for Business', next:'o_whfb' },
         { label:'No, unmanaged / BYOD', sub:'e.g. a consultant\'s personal laptop', next:'o_windows_save' }
+      ]
+    },
+
+    q_macos_managed: {
+      type:'question',
+      step:3,
+      eyebrow:'macOS',
+      title:"Is the Mac company-owned and Microsoft Entra joined via Platform SSO?",
+      help:"Platform SSO needs the Mac enrolled in MDM with the Microsoft Enterprise SSO plug-in. A personal or BYOD Mac isn't eligible.",
+      options:[
+        { label:'Yes, company-owned and Entra-joined', sub:'Enrolled with Platform SSO', next:'o_macos_psso' },
+        { label:'No, personal / BYOD Mac', sub:'Not enrolled in Platform SSO', next:'o_macos_byod' }
       ]
     },
 
@@ -366,16 +385,29 @@
       ]
     },
 
-    o_macos: {
+    o_macos_psso: {
       type:'outcome', status:'success',
-      title:'Use Platform SSO / Platform Credential for macOS',
+      title:'Use Platform SSO for macOS',
       body:[
-        "On a managed Mac (macOS 14+, enrolled via MDM with the Microsoft Enterprise SSO plug-in), Platform SSO's Secure Enclave-backed Platform Credential gives you a device-bound, phishing-resistant sign-in — unlocked with Touch ID — comparable to Windows Hello for Business.",
-        "No FIDO2 key or synced provider is required. An unmanaged Mac falls back to needing a FIDO2 key or a synced passkey instead."
+        "On a company-owned Mac enrolled in MDM with the Microsoft Enterprise SSO plug-in, Platform SSO's Secure Enclave-backed Platform Credential gives you a device-bound, phishing-resistant sign-in — unlocked with Touch ID — comparable to Windows Hello for Business.",
+        "No FIDO2 key or phone is required for this path."
       ],
       links:[
         { label:'macOS Platform Single Sign-on (PSSO) overview', url:'https://learn.microsoft.com/en-us/entra/identity/devices/macos-psso' },
         { label:'Platform Credential for macOS authentication method', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-platform-credential-for-macos' }
+      ]
+    },
+
+    o_macos_byod: {
+      type:'outcome', status:'success',
+      title:'Use a FIDO2 key or Authenticator passkey',
+      body:[
+        "A personal or BYOD Mac isn't enrolled in Platform SSO, so there's no Platform Credential to fall back on — Microsoft doesn't offer a local, unmanaged equivalent to Windows' \"save a passkey to this device\" option on macOS.",
+        "Two device-bound options remain: plug in a <strong>FIDO2 security key</strong>, or use the <strong>passkey in Microsoft Authenticator</strong> on the user's phone and sign in on the Mac via cross-device registration and authentication (QR code plus Bluetooth proximity check)."
+      ],
+      links:[
+        { label:'Support for FIDO2 authentication with Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-fido2-compatibility' },
+        { label:'Enable and support passkeys in Authenticator', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-authenticator-passkey' }
       ]
     },
 
@@ -431,6 +463,14 @@
   var progressLabel = document.getElementById('progressLabel');
 
   var MAX_STEPS = 3;
+
+  function scrollCardIntoView(){
+    var rect = card.getBoundingClientRect();
+    if (rect.top < 0 || rect.top > 24){
+      window.scrollTo({ top: window.scrollY + rect.top - 16, behavior:'smooth' });
+    }
+  }
+
   for (var i=0; i<MAX_STEPS; i++){
     var seg = document.createElement('div');
     seg.className = 'progress-seg';
@@ -492,7 +532,7 @@
         history.push({ nodeId: currentId, choiceLabel: opt.label });
         currentId = opt.next;
         render();
-        card.scrollIntoView({ behavior:'smooth', block:'start' });
+        scrollCardIntoView();
       });
     });
 
@@ -536,14 +576,14 @@
         var prev = history.pop();
         currentId = prev.nodeId;
         render();
-        card.scrollIntoView({ behavior:'smooth', block:'start' });
+        scrollCardIntoView();
       });
     }
     restartBtn.addEventListener('click', function(){
       history = [];
       currentId = 'q_physicalkey';
       render();
-      card.scrollIntoView({ behavior:'smooth', block:'start' });
+      scrollCardIntoView();
     });
   }
 
@@ -556,7 +596,18 @@
     }
     updateProgress();
     renderTrail();
+    reportHeight();
   }
+
+  function reportHeight(){
+    try {
+      var h = document.documentElement.scrollHeight;
+      window.parent.postMessage({ azureBrotherPasskeyFlowHeight: h }, '*');
+    } catch(e){}
+  }
+  window.addEventListener('load', reportHeight);
+  window.addEventListener('resize', reportHeight);
+
 
   render();
 })();
