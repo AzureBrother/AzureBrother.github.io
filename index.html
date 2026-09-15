@@ -164,7 +164,14 @@
             if (e.data && typeof e.data.azureBrotherPasskeyFlowHeight === 'number') {
                 var frame = document.getElementById('passkeyFlow');
                 if (frame) {
-                    frame.style.height = (e.data.azureBrotherPasskeyFlowHeight + 24) + 'px';
+                    var newHeight = e.data.azureBrotherPasskeyFlowHeight;
+                    var currentHeight = parseInt(frame.style.height) || 0;
+                    
+                    // Added threshold logic to prevent infinite pixel-fraction loops
+                    // And removed the "+ 24" which caused the infinite expansion bug
+                    if (Math.abs(newHeight - currentHeight) > 3) {
+                        frame.style.height = newHeight + 'px';
+                    }
                 }
             }
         });
