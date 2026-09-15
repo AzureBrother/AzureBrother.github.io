@@ -1,249 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entra ID Passkey Decision Flow</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        azureDark: '#0b1120',
-                        azurePanel: '#1e293b',
-                        azureBlue: '#0ea5e9',
-                        azureHover: '#0284c7',
-                        azureAccent: '#38bdf8'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: transparent;
-            color: #f8fafc;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-        }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passkey decision flow for Microsoft Entra ID | Azure Brother</title>
+<meta name="description" content="An interactive decision tree to help IT admins choose the right Entra ID passkey option — FIDO2 security keys, synced passkeys, Windows Hello for Business, Platform SSO for macOS, and passkeys in Microsoft Authenticator.">
+<meta property="og:title" content="Passkey decision flow for Microsoft Entra ID | Azure Brother">
+<meta property="og:description" content="Answer a few questions and get the right passkey option for your user's device and your organization's policy.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#050b14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #050b14;
+    --bg-panel: #0a1420;
+    --bg-panel-2: #0e1b2b;
+    --border: #1c3348;
+    --border-soft: #142839;
+    --cyan: #00d4ff;
+    --cyan-dim: #0a8fb0;
+    --green: #39ff88;
+    --amber: #ffb020;
+    --red: #ff5470;
+    --text: #e8f1f8;
+    --text-dim: #8ba3b8;
+    --text-faint: #5a7386;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'Inter', -apple-system, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* PCB grid overlay */
+  .pcb-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.055) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 85%);
+            mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 85%);
+  }
+  .pcb-nodes{
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.5;
+  }
+
+  .wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:0 20px 80px; }
+
+  /* Header */
+  header{ padding:40px 0 28px; text-align:center; }
+  .brand{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--font-mono); font-size:13px; letter-spacing:0.12em;
+    color:var(--cyan); text-transform:uppercase;
+  }
+  .brand-dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); }
+  h1{
+    font-family:var(--font-display);
+    font-size:clamp(34px, 7vw, 54px);
+    letter-spacing:0.01em;
+    margin:14px 0 8px;
+    line-height:1.02;
+  }
+  .tagline{ color:var(--text-dim); font-family:var(--font-mono); font-size:13px; letter-spacing:0.06em; margin:0 0 6px; }
+  .tagline span{ color:var(--cyan); }
+  .subhead{ color:var(--text-dim); font-size:15px; max-width:520px; margin:14px auto 0; }
+
+  /* Progress */
+  .progress-row{
+    display:flex; align-items:center; gap:14px; margin:34px 0 26px;
+  }
+  .progress-label{ font-family:var(--font-mono); font-size:12px; color:var(--text-faint); white-space:nowrap; }
+  .progress-track{
+    flex:1; display:flex; gap:6px;
+  }
+  .progress-seg{
+    height:4px; flex:1; border-radius:2px; background:var(--border-soft);
+    transition:background 0.35s ease;
+  }
+  .progress-seg.on{ background:var(--cyan); box-shadow:0 0 6px rgba(0,212,255,0.5); }
+
+  /* Card */
+  .card{
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:30px 26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+  }
+
+  .q-eyebrow{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em;
+    color:var(--text-faint); text-transform:uppercase; margin:0 0 10px;
+  }
+  .q-title{ font-size:22px; font-weight:600; margin:0 0 8px; line-height:1.3; }
+  .q-help{ color:var(--text-dim); font-size:14.5px; margin:0 0 14px; }
+  .q-reqs{ list-style:none; margin:0 0 24px; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .q-reqs li{
+    font-family:var(--font-mono); font-size:13px; color:var(--cyan);
+    display:flex; align-items:center; gap:8px;
+  }
+  .q-reqs li::before{ content:''; width:6px; height:6px; border-radius:50%; background:var(--cyan); flex-shrink:0; }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt-btn{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:var(--bg-panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-family:var(--font-body); font-size:15px; font-weight:500;
+    text-align:left;
+    padding:15px 18px;
+    border-radius:7px;
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+  .opt-btn:hover{ border-color:var(--cyan-dim); background:#0f1e30; }
+  .opt-btn:active{ transform:scale(0.995); }
+  .opt-btn .opt-sub{ display:block; font-weight:400; font-size:12.5px; color:var(--text-faint); margin-top:3px; }
+  .opt-arrow{ color:var(--cyan); font-family:var(--font-mono); font-size:16px; flex-shrink:0; }
+
+  /* Outcome */
+  .outcome-badge{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:6px 14px 6px 10px; border-radius:20px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .badge-icon{
+    width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; font-family:var(--font-body);
+    flex-shrink:0;
+  }
+  .outcome-success .outcome-badge{ background:rgba(57,255,136,0.1); color:var(--green); border:1px solid rgba(57,255,136,0.3); }
+  .outcome-success .badge-icon{ background:var(--green); color:#04120a; }
+  .outcome-warning .outcome-badge{ background:rgba(255,176,32,0.1); color:var(--amber); border:1px solid rgba(255,176,32,0.3); }
+  .outcome-warning .badge-icon{ background:var(--amber); color:#1a1204; }
+  .outcome-error .outcome-badge{ background:rgba(255,84,112,0.1); color:var(--red); border:1px solid rgba(255,84,112,0.3); }
+  .outcome-error .badge-icon{ background:var(--red); color:#1a0409; }
+
+  .outcome-title{ font-size:25px; font-weight:700; margin:0 0 14px; line-height:1.25; }
+  .outcome-body p{ color:var(--text-dim); font-size:15px; margin:0 0 14px; }
+  .outcome-body strong{ color:var(--text); font-weight:600; }
+  .outcome-body code{
+    font-family:var(--font-mono); background:var(--bg-panel-2); border:1px solid var(--border);
+    padding:1px 6px; border-radius:4px; font-size:13px; color:var(--cyan);
+  }
+
+  .callout{
+    border-left:2px solid var(--border);
+    padding:4px 0 4px 16px; margin:18px 0; color:var(--text-faint); font-size:13.5px;
+  }
+  .outcome-warning .callout{ border-color:var(--amber); }
+  .outcome-error .callout{ border-color:var(--red); }
+
+  .links-title{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; color:var(--text-faint); text-transform:uppercase; margin:22px 0 10px; }
+  .link-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .link-list a{
+    color:var(--cyan); text-decoration:none; font-size:14px;
+    display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid transparent;
+  }
+  .link-list a:hover{ border-bottom-color:var(--cyan-dim); }
+  .link-list a::before{ content:'↗'; font-family:var(--font-mono); color:var(--cyan-dim); }
+
+  /* Controls */
+  .controls{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:24px; gap:10px; flex-wrap:wrap;
+  }
+  .btn-ghost{
+    background:transparent; border:1px solid var(--border); color:var(--text-dim);
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.04em;
+    padding:10px 16px; border-radius:6px; cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--cyan-dim); color:var(--text); }
+  .btn-ghost:disabled{ opacity:0.35; cursor:default; }
+  .btn-ghost:disabled:hover{ border-color:var(--border); color:var(--text-dim); }
+  .btn-primary{
+    background:var(--cyan); border:1px solid var(--cyan); color:#03141c;
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.04em; font-weight:700;
+    padding:10px 18px; border-radius:6px; cursor:pointer;
+  }
+  .btn-primary:hover{ background:#33ddff; }
+
+  .trail{
+    margin-top:18px; font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint);
+    display:flex; flex-wrap:wrap; gap:6px; align-items:center;
+  }
+  .trail span.seg{ white-space:nowrap; }
+  .trail span.sep{ color:var(--border); }
+
+  /* Info panel */
+  .info-panel{
+    margin-top:30px; background:var(--bg-panel); border:1px solid var(--border); border-radius:10px; padding:22px 24px;
+  }
+  .info-panel h2{ font-size:15px; margin:0 0 10px; font-weight:600; }
+  .info-panel p{ color:var(--text-dim); font-size:13.5px; margin:0; }
+  .info-panel a{ color:var(--cyan); text-decoration:none; border-bottom:1px solid var(--cyan-dim); }
+
+  footer{
+    text-align:center; margin-top:50px; padding-top:26px; border-top:1px solid var(--border-soft);
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); line-height:1.9;
+  }
+  footer a{ color:var(--text-faint); }
+  footer .foot-brand{ color:var(--cyan); }
+
+  @media (max-width:480px){
+    .card{ padding:24px 18px; }
+    .q-title{ font-size:19px; }
+    .outcome-title{ font-size:21px; }
+    .controls{ flex-direction:column-reverse; align-items:stretch; }
+    .controls .btn-ghost, .controls .btn-primary{ width:100%; text-align:center; }
+    .progress-row{ flex-wrap:wrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; scroll-behavior:auto !important; }
+  }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+</style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-4">
+<body>
 
-    <!-- App Container (Header removed for seamless iframe embed) -->
-    <main class="w-full max-w-2xl bg-azurePanel rounded-2xl border border-slate-700 overflow-hidden flex flex-col fade-in shadow-none mt-2">
-        <!-- Progress Bar -->
-        <div class="w-full bg-slate-800 h-2">
-            <div id="progress-bar" class="bg-azureBlue h-2 transition-all duration-300" style="width: 25%"></div>
-        </div>
-        
-        <!-- Interactive Content -->
-        <div class="p-6 md:p-8 flex-grow min-h-[350px] flex flex-col justify-center" id="content-container">
-            <!-- Dynamic Content injected via JS -->
-        </div>
+<div class="pcb-bg" aria-hidden="true"></div>
 
-        <!-- Footer Navigation -->
-        <div class="bg-slate-800/50 p-4 px-6 md:px-8 border-t border-slate-700 flex justify-between items-center">
-            <button id="btn-back" class="text-slate-400 hover:text-white font-medium px-4 py-2 rounded transition-colors hidden" onclick="goBack()">
-                &larr; Back
-            </button>
-            <button class="text-azureBlue hover:text-azureAccent font-medium px-4 py-2 rounded transition-colors ml-auto flex items-center gap-2" onclick="startAgain()">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Start Again
-            </button>
-        </div>
-    </main>
+<div class="wrap">
+  <header>
+    <p class="subhead">Answer a few questions about the user's hardware to land on the right device-bound passkey option - with links to the official Microsoft docs for each one. Synced passkeys are disabled at the tenant level, so this flow only covers device-bound paths.</p>
+  </header>
 
-    <script>
-        const flow = {
-            start: {
-                question: "How are you trying to configure or use your Passkey?",
-                depth: 1,
-                options: [
-                    { text: "On a Windows Device", next: "windows_path" },
-                    { text: "On a macOS Device", next: "macos_path" },
-                    { text: "Using a mobile phone / Microsoft Authenticator", next: "auth_path" }
-                ]
-            },
-            windows_path: {
-                question: "What type of Windows device is this?",
-                depth: 2,
-                options: [
-                    { text: "Company-managed device (Corporate)", next: "windows_managed" },
-                    { text: "BYOD or Consultant device (Unmanaged)", next: "windows_byod" }
-                ]
-            },
-            windows_managed: {
-                type: "result",
-                status: "success",
-                title: "✅ Use Windows Hello for Business (WHfB)",
-                details: `For managed Windows devices, <a href="https://learn.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/how-it-works" target="_blank" rel="noopener noreferrer" class="text-azureBlue hover:underline">Windows Hello for Business (WHfB)</a> acts as a strong, device-bound passkey backed by the device's TPM. This is Microsoft's recommended native integration for corporate identities.`
-            },
-            windows_byod: {
-                type: "result",
-                status: "success",
-                title: "✅ Save Passkey to Windows Device (FIDO2)",
-                details: "For BYOD or consultants, Entra ID allows saving a FIDO2 passkey directly to Windows Hello. This registers a device-bound passkey isolated to that specific local device without requiring full MDM enrollment."
-            },
-            macos_path: {
-                type: "result",
-                status: "success",
-                title: "✅ Use Platform SSO for macOS",
-                details: `On macOS 13 or later, <a href="https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-platform-sso-macos?tabs=secure-enclave" target="_blank" rel="noopener noreferrer" class="text-azureBlue hover:underline">Platform SSO (with Secure Enclave)</a> enables hardware-bound passkeys native to Apple devices, providing a seamless, phishing-resistant Entra ID sign-in experience.`
-            },
-            auth_path: {
-                question: "Do you have a physical FIDO2 security key (e.g., YubiKey)?",
-                depth: 2,
-                options: [
-                    { text: "Yes, I have a hardware security key", next: "fido2_key" },
-                    { text: "No, I am prompted to use my phone", next: "phone_os" }
-                ]
-            },
-            fido2_key: {
-                type: "result",
-                status: "success",
-                title: "✅ Register a FIDO2 Security Key",
-                details: "A physical FIDO2 security key is a true device-bound passkey offering the highest level of phishing resistance. It completely bypasses mobile OS version limitations."
-            },
-            phone_os: {
-                question: "Does your mobile device meet the minimum OS requirements for Authenticator Passkeys?",
-                depth: 3,
-                infoHtml: `Microsoft Authenticator passkeys require <strong>Android 14+</strong> or <strong>iOS 17+</strong>, and minimum app versions (iOS 6.8.37+ / Android 6.2507+). <br><a href="https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-authenticator-passkey" target="_blank" class="text-azureBlue hover:text-azureAccent underline mt-2 inline-block text-sm">View Official Documentation</a>`,
-                options: [
-                    { text: "Yes (Android 14+ / iOS 17+)", next: "auth_passkey" },
-                    { text: "No (Older Android/iOS version)", next: "synced_check" }
-                ]
-            },
-            auth_passkey: {
-                type: "result",
-                status: "success",
-                title: "✅ Use Microsoft Authenticator Passkey",
-                details: "Your OS is supported! You can register a highly secure, device-bound passkey directly inside the Microsoft Authenticator app."
-            },
-            synced_check: {
-                question: "Does your organization allow 'Synced Passkeys'?",
-                depth: 4,
-                infoHtml: `<strong>Device-Bound</strong> passkeys (like MS Authenticator) never leave the physical device. <strong>Synced Passkeys</strong> backup to the cloud (e.g., Google Password Manager, iCloud). Many high-security environments block synced passkeys via Entra Attestation policies. <br><a href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2#types-of-passkeys" target="_blank" class="text-azureBlue hover:text-azureAccent underline mt-2 inline-block text-sm">Learn about Device-bound vs Synced Passkeys</a>`,
-                options: [
-                    { text: "Yes, synced passkeys are allowed", next: "synced_passkey_result" },
-                    { text: "No, synced passkeys are prohibited", next: "no_option" }
-                ]
-            },
-            synced_passkey_result: {
-                type: "result",
-                status: "warning",
-                title: "⚠️ Use a Synced Passkey",
-                details: "Since your OS is too old for the Authenticator device-bound passkey, but your organization allows Synced Passkeys, you can save the credential to your native Google Password Manager (Android) or iCloud Keychain (iOS)."
-            },
-            no_option: {
-                type: "result",
-                status: "error",
-                title: "❌ No suitable passkey option",
-                details: "<p class='mb-3'>Based on your scenario, you are currently blocked from registering a passkey because:</p><ul class='list-disc ml-5 mb-4 space-y-1 text-slate-300'><li>You don't have a physical FIDO2 key.</li><li>Your Android/iOS version is too old for Microsoft Authenticator passkeys (Android 14+ / iOS 17+ required).</li><li>Your organization's security policy prohibits Synced Passkeys.</li></ul><p><strong>Resolution:</strong> You must upgrade your mobile device OS, acquire a physical FIDO2 security key, or contact your IT admin for a fallback authentication method (such as a Temporary Access Pass).</p>"
-            }
-        };
+  <div class="progress-row">
+    <span class="progress-label" id="progressLabel">Question 1</span>
+    <div class="progress-track" id="progressTrack" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" aria-label="Decision flow progress"></div>
+  </div>
 
-        const maxDepth = 4;
-        let historyStack = [];
-        let currentNodeKey = 'start';
+  <main class="card" id="card" aria-live="polite"></main>
 
-        const container = document.getElementById('content-container');
-        const btnBack = document.getElementById('btn-back');
-        const progressBar = document.getElementById('progress-bar');
+  <div class="trail" id="trail"></div>
 
-        function renderNode(nodeKey) {
-            const node = flow[nodeKey];
-            container.innerHTML = '';
-            
-            const currentDepth = node.depth || (historyStack.length + 1);
-            const percentage = Math.min((currentDepth / maxDepth) * 100, 100);
-            progressBar.style.width = `${percentage}%`;
+  <section class="info-panel">
+    <h2>Why no synced-passkey branch?</h2>
+    <p>Device-bound passkeys never leave the hardware they were created on (a FIDO2 key, Windows Hello for Business, Authenticator on a phone). Synced passkeys are encrypted and copied across a user's devices via a provider like iCloud Keychain or Google Password Manager — convenient, but they don't support attestation, which is why this tenant keeps the passkey profile device-bound only. See Microsoft's comparison in <a href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2" target="_blank" rel="noopener">Passkeys (FIDO2) authentication method in Microsoft Entra ID</a>.</p>
+  </section>
 
-            if (historyStack.length > 0) {
-                btnBack.classList.remove('hidden');
-            } else {
-                btnBack.classList.add('hidden');
-            }
+  <footer>
+    <div>Built for Entra ID admins. Requirements and version numbers shift often — always confirm against the linked Microsoft Learn pages before enforcing a policy.</div>
+  </footer>
+</div>
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'fade-in flex flex-col h-full justify-center';
+<script>
+(function(){
 
-            if (node.type === 'result') {
-                progressBar.style.width = '100%';
-                
-                let iconColor = 'text-green-500';
-                let bgBorder = 'border-green-500/30 bg-green-500/10';
-                if (node.status === 'warning') {
-                    iconColor = 'text-yellow-400';
-                    bgBorder = 'border-yellow-400/30 bg-yellow-400/10';
-                } else if (node.status === 'error') {
-                    iconColor = 'text-red-400';
-                    bgBorder = 'border-red-500/30 bg-red-500/10';
-                }
+  // ---------- Decision tree data ----------
+  var TREE = {
 
-                wrapper.innerHTML = `
-                    <div class="p-6 md:p-8 rounded-xl border ${bgBorder} text-center shadow-lg">
-                        <h2 class="text-2xl font-bold text-white mb-4 ${iconColor}">${node.title}</h2>
-                        <div class="text-slate-300 text-left text-base md:text-lg leading-relaxed">${node.details}</div>
-                    </div>
-                `;
-            } else {
-                let html = `<h2 class="text-xl md:text-2xl font-semibold text-white mb-6 text-center leading-snug">${node.question}</h2>`;
-                
-                if (node.infoHtml) {
-                    html += `
-                        <div class="mb-6 p-4 bg-slate-800/80 border-l-4 border-azureBlue text-slate-300 text-sm rounded-r-lg shadow-inner">
-                            ${node.infoHtml}
-                        </div>
-                    `;
-                }
+    q_physicalkey: {
+      type:'question',
+      step:1,
+      eyebrow:'Start here',
+      title:"Does the user have a physical security key?",
+      help:"e.g. a YubiKey or other FIDO2 hardware key.",
+      options:[
+        { label:'Yes, a FIDO2 key is available', sub:'Hardware key ready to register', next:'o_yubikey' },
+        { label:'No physical key available', sub:'Continue to the next question', next:'q_platform' }
+      ]
+    },
 
-                html += `<div class="space-y-3 mt-auto">`;
-                
-                node.options.forEach(opt => {
-                    html += `
-                        <button onclick="navigate('${opt.next}')" 
-                                class="w-full text-left px-6 py-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-azureBlue transition-all duration-200 group flex items-center justify-between shadow-sm">
-                            <span class="text-white font-medium group-hover:text-azureBlue transition-colors">${opt.text}</span>
-                            <span class="text-slate-500 group-hover:text-azureBlue transition-colors text-xl">&rarr;</span>
-                        </button>
-                    `;
-                });
-                
-                html += `</div>`;
-                wrapper.innerHTML = html;
-            }
+    q_platform: {
+      type:'question',
+      step:2,
+      eyebrow:'Device check',
+      title:"What platform is the user's device?",
+      help:"This determines which built-in, device-bound option is available.",
+      options:[
+        { label:'Windows', sub:'Windows Hello for Business or local save', next:'q_windows_managed' },
+        { label:'macOS', sub:'Platform SSO / Platform Credential', next:'o_macos' },
+        { label:'Android or iOS', sub:'Passkey in Microsoft Authenticator', next:'q_mobile_version' },
+        { label:'Linux', sub:'No built-in platform credential', next:'o_linux' }
+      ]
+    },
 
-            container.appendChild(wrapper);
-        }
+    q_windows_managed: {
+      type:'question',
+      step:3,
+      eyebrow:'Windows',
+      title:"Is the device Microsoft Entra joined (or hybrid joined) and managed, e.g. by Intune?",
+      help:"Windows Hello for Business needs a managed, joined device. An unmanaged BYOD PC that's only Entra-registered doesn't qualify.",
+      options:[
+        { label:'Yes, joined and managed', sub:'Eligible for Windows Hello for Business', next:'o_whfb' },
+        { label:'No, unmanaged / BYOD', sub:'e.g. a consultant\'s personal laptop', next:'o_windows_save' }
+      ]
+    },
 
-        function navigate(nextNodeKey) {
-            historyStack.push(currentNodeKey);
-            currentNodeKey = nextNodeKey;
-            renderNode(currentNodeKey);
-        }
+    q_mobile_version: {
+      type:'question',
+      step:3,
+      eyebrow:'Android / iOS',
+      title:"Recent Authenticator OS?",
+      help:"Microsoft Authenticator can only hold a passkey if the phone meets one of these minimums, and the app itself is a current build:",
+      reqs:[ 'iOS version 17 or later', 'Android version 14 or later' ],
+      options:[
+        { label:'Yes, meets the minimum', sub:'OS and app are current', next:'o_authenticator' },
+        { label:'No — OS or app is out of date', sub:'e.g. an old Android version', next:'o_noopt_mobile' }
+      ]
+    },
 
-        function goBack() {
-            if (historyStack.length > 0) {
-                currentNodeKey = historyStack.pop();
-                renderNode(currentNodeKey);
-            }
-        }
+    // ---------- Outcomes ----------
+    o_yubikey: {
+      type:'outcome', status:'success',
+      title:'Use a FIDO2 security key',
+      body:[
+        "A physical key is the most portable device-bound option — it isn't tied to any one platform, works the same way on Windows, macOS, and Linux, and supports attestation so you can restrict registration to trusted key models by AAGUID.",
+        "This is Microsoft's recommended baseline for admins and other highly privileged accounts, regardless of what else is available to the user."
+      ],
+      note:"Register it as a <strong>Device-bound</strong> passkey type in the Passkey (FIDO2) profile.",
+      links:[
+        { label:'Enable passkeys (FIDO2) in Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-authentication-passkeys-fido2' },
+        { label:'Support for FIDO2 authentication with Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-fido2-compatibility' }
+      ]
+    },
 
-        function startAgain() {
-            historyStack = [];
-            currentNodeKey = 'start';
-            renderNode('start');
-        }
+    o_whfb: {
+      type:'outcome', status:'success',
+      title:'Use Windows Hello for Business',
+      body:[
+        "On a managed, Entra-joined (or hybrid-joined) Windows PC, Windows Hello for Business provisions a device-bound, phishing-resistant credential unlocked with the device's PIN, face, or fingerprint.",
+        "No FIDO2 key is needed and the phone is never involved — so an old Android device with no passkey support in Authenticator has no bearing on this path at all."
+      ],
+      links:[
+        { label:'Windows Hello for Business — authentication methods overview', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-windows-hello' }
+      ]
+    },
 
-        renderNode('start');
-    </script>
+    o_windows_save: {
+      type:'outcome', status:'warning',
+      title:'Save a passkey to this Windows device',
+      body:[
+        "For an unmanaged or BYOD Windows PC — a consultant's own laptop that's Entra-registered but not enrolled in Intune — full Windows Hello for Business isn't available. Windows does offer a lighter-weight option: saving a device-bound passkey locally via Windows Hello without requiring the device to be managed.",
+        "Treat this as something to validate rather than assume: confirm it's actually offered for the account type and tenant configuration in question before relying on it for a rollout, since availability and behavior have been evolving."
+      ],
+      note:"Marked as <strong>more information required</strong> — verify current availability against the Microsoft Support article below before you commit to this path for BYOD users.",
+      links:[
+        { label:'Create and save a passkey — Microsoft Support', url:'https://support.microsoft.com/en-us/account-billing/create-and-save-a-passkey-e92cd3e0-11fa-4630-a5ea-3ccc0396b3d9' },
+        { label:'Windows Hello for Business overview (for contrast)', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-windows-hello' }
+      ]
+    },
+
+    o_macos: {
+      type:'outcome', status:'success',
+      title:'Use Platform SSO / Platform Credential for macOS',
+      body:[
+        "On a managed Mac (macOS 14+, enrolled via MDM with the Microsoft Enterprise SSO plug-in), Platform SSO's Secure Enclave-backed Platform Credential gives you a device-bound, phishing-resistant sign-in — unlocked with Touch ID — comparable to Windows Hello for Business.",
+        "No FIDO2 key or synced provider is required. An unmanaged Mac falls back to needing a FIDO2 key or a synced passkey instead."
+      ],
+      links:[
+        { label:'macOS Platform Single Sign-on (PSSO) overview', url:'https://learn.microsoft.com/en-us/entra/identity/devices/macos-psso' },
+        { label:'Platform Credential for macOS authentication method', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-platform-credential-for-macos' }
+      ]
+    },
+
+    o_authenticator: {
+      type:'outcome', status:'success',
+      title:'Use a device-bound passkey in Microsoft Authenticator',
+      body:[
+        "The device meets Microsoft's minimum requirements — Android 14+ or iOS 17+ — so the user can register a device-bound passkey directly in Microsoft Authenticator.",
+        "Microsoft also gates this by app version: as of writing, a passkey profile targeting Authenticator needs iOS <code>6.8.37</code>+ or Android <code>6.2507.4749</code>+. These numbers move with app releases, so check the official requirements page before you enforce a profile."
+      ],
+      links:[
+        { label:'Enable and support passkeys in Authenticator', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-authenticator-passkey' },
+        { label:'Register a passkey in Microsoft Authenticator', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-register-passkey-authenticator' }
+      ]
+    },
+
+    o_noopt_mobile: {
+      type:'outcome', status:'error',
+      title:'No compliant passkey option on this device',
+      body:[
+        "This is the exact scenario worth flagging to users: no FIDO2 key, an Android or iOS version below Microsoft's minimum, and synced passkeys blocked by policy. As configured, this specific device has no compliant path today.",
+        "Practical ways forward: upgrade the device to Android 14+ / iOS 17+ with a current Authenticator build; issue the user a FIDO2 security key instead; if they also use a company Windows PC, register Windows Hello for Business there; or revisit the synced-passkey restriction for this user's risk tier."
+      ],
+      note:"Old Android + no FIDO2 key + synced passkeys prohibited is the scenario this tree was built to catch.",
+      links:[
+        { label:'Enable and support passkeys in Authenticator — requirements', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-authenticator-passkey' },
+        { label:'Passkey FAQs — Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/passkey-faq' }
+      ]
+    },
+
+    o_linux: {
+      type:'outcome', status:'error',
+      title:'No native platform credential on Linux',
+      body:[
+        "Windows Hello for Business, Platform SSO for macOS, and passkeys in Microsoft Authenticator don't cover Linux. A FIDO2 security key is the supported device-bound path there.",
+        "Without a physical key, and with synced passkeys blocked by policy, there's no compliant option left for this device as configured."
+      ],
+      links:[
+        { label:'Support for FIDO2 authentication with Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-fido2-compatibility' }
+      ]
+    }
+  };
+
+  var ICONS = { success:'✓', warning:'!', error:'✕' };
+  var STATUS_LABEL = { success:'Recommended option', warning:'More information required', error:'No suitable passkey option' };
+
+  var history = []; // {nodeId, choiceLabel}
+  var currentId = 'q_physicalkey';
+
+  var card = document.getElementById('card');
+  var trailEl = document.getElementById('trail');
+  var progressTrack = document.getElementById('progressTrack');
+  var progressLabel = document.getElementById('progressLabel');
+
+  var MAX_STEPS = 3;
+  for (var i=0; i<MAX_STEPS; i++){
+    var seg = document.createElement('div');
+    seg.className = 'progress-seg';
+    progressTrack.appendChild(seg);
+  }
+
+  function updateProgress(){
+    var node = TREE[currentId];
+    var depth = node.type === 'question' ? node.step : history.length;
+    var segs = progressTrack.children;
+    for (var i=0; i<segs.length; i++){
+      segs[i].classList.toggle('on', i < depth);
+    }
+    progressTrack.setAttribute('aria-valuenow', depth);
+    if (node.type === 'question'){
+      progressLabel.textContent = 'Question ' + node.step;
+    } else {
+      progressLabel.textContent = 'Result';
+    }
+  }
+
+  function renderTrail(){
+    if (history.length === 0){ trailEl.innerHTML=''; return; }
+    var parts = [];
+    history.forEach(function(h, idx){
+      parts.push('<span class="seg">' + h.choiceLabel + '</span>');
+      parts.push('<span class="sep">/</span>');
+    });
+    parts.pop();
+    trailEl.innerHTML = parts.join(' ');
+  }
+
+  function renderQuestion(node){
+    var html = '';
+    html += '<p class="q-eyebrow">' + node.eyebrow + '</p>';
+    html += '<h2 class="q-title">' + node.title + '</h2>';
+    if (node.help) html += '<p class="q-help">' + node.help + '</p>';
+    if (node.reqs){
+      html += '<ul class="q-reqs">';
+      node.reqs.forEach(function(r){ html += '<li>' + r + '</li>'; });
+      html += '</ul>';
+    }
+    html += '<div class="options">';
+    node.options.forEach(function(opt, idx){
+      html += '<button class="opt-btn" data-idx="' + idx + '">' +
+                '<span>' + opt.label + (opt.sub ? '<span class="opt-sub">' + opt.sub + '</span>' : '') + '</span>' +
+                '<span class="opt-arrow">&#8594;</span>' +
+              '</button>';
+    });
+    html += '</div>';
+    html += renderControls(false);
+    card.innerHTML = html;
+
+    var btns = card.querySelectorAll('.opt-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = parseInt(btn.getAttribute('data-idx'), 10);
+        var opt = node.options[idx];
+        history.push({ nodeId: currentId, choiceLabel: opt.label });
+        currentId = opt.next;
+        render();
+        card.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    });
+
+    wireControls();
+  }
+
+  function renderOutcome(node){
+    var html = '<div class="outcome-' + node.status + '">';
+    html += '<div class="outcome-badge"><span class="badge-icon">' + ICONS[node.status] + '</span>' + STATUS_LABEL[node.status] + '</div>';
+    html += '<h2 class="outcome-title">' + node.title + '</h2>';
+    html += '<div class="outcome-body">';
+    node.body.forEach(function(p){ html += '<p>' + p + '</p>'; });
+    html += '</div>';
+    if (node.note){ html += '<div class="callout">' + node.note + '</div>'; }
+    html += '<p class="links-title">Official Microsoft docs</p>';
+    html += '<ul class="link-list">';
+    node.links.forEach(function(l){
+      html += '<li><a href="' + l.url + '" target="_blank" rel="noopener">' + l.label + '</a></li>';
+    });
+    html += '</ul>';
+    html += '</div>';
+    html += renderControls(true);
+    card.innerHTML = html;
+    wireControls();
+  }
+
+  function renderControls(isOutcome){
+    var html = '<div class="controls">';
+    html += '<button class="btn-ghost" id="backBtn"' + (history.length===0 ? ' disabled' : '') + '>&#8592; Back</button>';
+    html += '<button class="btn-primary" id="restartBtn">Start again</button>';
+    html += '</div>';
+    return html;
+  }
+
+  function wireControls(){
+    var backBtn = document.getElementById('backBtn');
+    var restartBtn = document.getElementById('restartBtn');
+    if (backBtn){
+      backBtn.addEventListener('click', function(){
+        if (history.length === 0) return;
+        var prev = history.pop();
+        currentId = prev.nodeId;
+        render();
+        card.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    }
+    restartBtn.addEventListener('click', function(){
+      history = [];
+      currentId = 'q_physicalkey';
+      render();
+      card.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  }
+
+  function render(){
+    var node = TREE[currentId];
+    if (node.type === 'question'){
+      renderQuestion(node);
+    } else {
+      renderOutcome(node);
+    }
+    updateProgress();
+    renderTrail();
+  }
+
+  render();
+})();
+</script>
+
 </body>
 </html>
