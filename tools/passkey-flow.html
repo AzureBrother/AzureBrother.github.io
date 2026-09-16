@@ -57,7 +57,7 @@
     position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.5;
   }
 
-  .wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:0 20px 80px; }
+  .wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:28px 20px 28px; }
 
   /* Header */
   header{ padding:40px 0 28px; text-align:center; }
@@ -80,7 +80,7 @@
 
   /* Progress */
   .progress-row{
-    display:flex; align-items:center; gap:14px; margin:34px 0 26px;
+    display:flex; align-items:center; gap:14px; margin:0 0 26px;
   }
   .progress-label{ font-family:var(--font-mono); font-size:12px; color:var(--text-faint); white-space:nowrap; }
   .progress-track{
@@ -248,7 +248,6 @@
 <div class="pcb-bg" aria-hidden="true"></div>
 
 <div class="wrap">
-
   <div class="progress-row">
     <span class="progress-label" id="progressLabel">Question 1</span>
     <div class="progress-track" id="progressTrack" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" aria-label="Decision flow progress"></div>
@@ -257,15 +256,6 @@
   <main class="card" id="card" aria-live="polite"></main>
 
   <div class="trail" id="trail"></div>
-
-  <section class="info-panel">
-    <h2>Why no synced-passkey branch?</h2>
-    <p>Device-bound passkeys never leave the hardware they were created on (a FIDO2 key, Windows Hello for Business, Authenticator on a phone). Synced passkeys are encrypted and copied across a user's devices via a provider like iCloud Keychain or Google Password Manager - convenient, but they don't support attestation, which is why our tenant keeps the passkey profile device-bound only. See Microsoft's comparison in <a href="https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2" target="_blank" rel="noopener">Passkeys (FIDO2) authentication method in Microsoft Entra ID</a>.</p>
-  </section>
-
-  <footer>
-    <div>Built for Entra ID admins. Requirements and version numbers shift often — always confirm against the linked Microsoft Learn pages before enforcing a policy.</div>
-  </footer>
 </div>
 
 <script>
@@ -282,13 +272,25 @@
       help:"e.g. a YubiKey or other FIDO2 hardware key.",
       options:[
         { label:'Yes, a FIDO2 key is available', sub:'Hardware key ready to register', next:'o_yubikey' },
-        { label:'No physical key available', sub:'Continue to the next question', next:'q_platform' }
+        { label:'No physical key available', sub:'Continue to the next question', next:'q_synced' }
+      ]
+    },
+
+    q_synced: {
+      type:'question',
+      step:2,
+      eyebrow:'Policy check',
+      title:"Does your organization allow synced passkeys?",
+      help:"Synced passkeys sync via iCloud Keychain, Google Password Manager, or a supported password manager. Some tenants restrict passkey profiles to device-bound only.",
+      options:[
+        { label:'Yes, synced passkeys are allowed', sub:'Cloud-backed, low friction', next:'o_synced' },
+        { label:'No, device-bound only', sub:'Policy requires device-bound', next:'q_platform' }
       ]
     },
 
     q_platform: {
       type:'question',
-      step:2,
+      step:3,
       eyebrow:'Device check',
       title:"What platform is the user's device?",
       help:"This determines which built-in, device-bound option is available.",
@@ -302,7 +304,7 @@
 
     q_windows_managed: {
       type:'question',
-      step:3,
+      step:4,
       eyebrow:'Windows',
       title:"Is the device Microsoft Entra joined (or hybrid joined) and managed, e.g. by Intune?",
       help:"Windows Hello for Business needs a managed, joined device. An unmanaged BYOD PC that's only Entra-registered doesn't qualify.",
@@ -314,7 +316,7 @@
 
     q_macos_managed: {
       type:'question',
-      step:3,
+      step:4,
       eyebrow:'macOS',
       title:"Is the Mac company-owned and Microsoft Entra joined via Platform SSO?",
       help:"Platform SSO needs the Mac enrolled in MDM with the Microsoft Enterprise SSO plug-in. A personal or BYOD Mac isn't eligible.",
@@ -326,7 +328,7 @@
 
     q_mobile_version: {
       type:'question',
-      step:3,
+      step:4,
       eyebrow:'Android / iOS',
       title:"Recent Authenticator OS?",
       help:"Microsoft Authenticator can only hold a passkey if the phone meets one of these minimums, and the app itself is a current build:",
@@ -349,6 +351,19 @@
       links:[
         { label:'Enable passkeys (FIDO2) in Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-authentication-passkeys-fido2' },
         { label:'Support for FIDO2 authentication with Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-fido2-compatibility' }
+      ]
+    },
+
+    o_synced: {
+      type:'outcome', status:'success',
+      title:'Use a synced passkey',
+      body:[
+        "With synced passkeys allowed by policy, this is usually the lowest-friction path for a non-privileged user — the private key is encrypted and follows them across devices via their platform's credential provider, unlocked with face, fingerprint, or PIN.",
+        "Synced passkeys don't support attestation, so Microsoft recommends keeping device-bound passkeys or FIDO2 keys for admins and other high-privilege accounts even when synced is enabled tenant-wide."
+      ],
+      links:[
+        { label:'Enable synced passkeys in Microsoft Entra ID', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-synced-passkeys' },
+        { label:'Passkeys (FIDO2) authentication method — device-bound vs. synced', url:'https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2' }
       ]
     },
 
@@ -455,7 +470,7 @@
   var progressTrack = document.getElementById('progressTrack');
   var progressLabel = document.getElementById('progressLabel');
 
-  var MAX_STEPS = 3;
+  var MAX_STEPS = 4;
 
   function scrollCardIntoView(){
     var rect = card.getBoundingClientRect();
@@ -592,10 +607,15 @@
     reportHeight();
   }
 
+  var lastReportedHeight = 0;
   function reportHeight(){
     try {
-      var h = document.documentElement.scrollHeight;
-      window.parent.postMessage({ azureBrotherPasskeyFlowHeight: h }, '*');
+      var content = document.querySelector('.wrap');
+      var h = content ? Math.ceil(content.getBoundingClientRect().height) : document.documentElement.scrollHeight;
+      if (h !== lastReportedHeight){
+        lastReportedHeight = h;
+        window.parent.postMessage({ azureBrotherPasskeyFlowHeight: h }, '*');
+      }
     } catch(e){}
   }
   window.addEventListener('load', reportHeight);
