@@ -66,21 +66,22 @@
         <!-- Interactive Tools Section -->
         <section id="tools">
             <div class="flex items-center gap-3 mb-8">
-                <span class="text-2xl">🔑</span>
-               <h2 class="text-3xl font-bold text-white">Passkey Decision Flow</h2>
+                <span class="text-2xl">🛠️</span>
+                <h2 class="text-3xl font-bold text-white">Passkey Decision Flow</h2>
             </div>
             <div class="glass-card rounded-2xl p-2 shadow-2xl overflow-hidden">
                 <div class="p-6 pb-4 border-b border-slate-700/50">
-                    <p class="text-sm text-slate-400">Answer a few questions about the user's hardware to land on the right device-bound passkey option - with links to the official Microsoft docs for each one. Synced passkeys are disabled at the tenant level, so this flow only covers device-bound paths.</p>
+                    <p class="text-sm text-slate-400">Answer a few questions about the user's hardware and your Entra ID policy to land on the right passkey option - with links to the official Microsoft docs for each one.</p>
                 </div>
-                <!-- Height starts at a sane default and is then driven by postMessage from the iframe itself -->
+                <!-- Height starts at a sane default and is then driven by postMessage from the iframe itself.
+                     The transition smooths that resize so it reads as a gentle reflow rather than a jump. -->
                 <iframe
                     id="passkeyFlow"
                     src="./tools/passkey-flow.html"
                     title="Entra ID passkey decision flow"
                     loading="lazy"
                     class="w-full rounded-b-xl"
-                    style="border:none; height:650px;">
+                    style="border:none; height:420px; transition:height 0.25s ease-out; display:block;">
                 </iframe>
             </div>
         </section>
@@ -164,14 +165,7 @@
             if (e.data && typeof e.data.azureBrotherPasskeyFlowHeight === 'number') {
                 var frame = document.getElementById('passkeyFlow');
                 if (frame) {
-                    var newHeight = e.data.azureBrotherPasskeyFlowHeight;
-                    var currentHeight = parseInt(frame.style.height) || 0;
-                    
-                    // Added threshold logic to prevent infinite pixel-fraction loops
-                    // And removed the "+ 24" which caused the infinite expansion bug
-                    if (Math.abs(newHeight - currentHeight) > 3) {
-                        frame.style.height = newHeight + 'px';
-                    }
+                    frame.style.height = (e.data.azureBrotherPasskeyFlowHeight + 24) + 'px';
                 }
             }
         });
